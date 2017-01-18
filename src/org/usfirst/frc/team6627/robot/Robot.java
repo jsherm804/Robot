@@ -2,9 +2,12 @@ package org.usfirst.frc.team6627.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
@@ -14,11 +17,16 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
+
 public class Robot extends IterativeRobot {
 	RobotDrive SWRobot = new RobotDrive(0, 1);
 	Joystick mainStick = new Joystick(0); // Main drive stick
 	Joystick secStick = new Joystick(1); // Likely to be pneumatics
 	Timer timer = new Timer();
+	
+	boolean isUp = false;
+	
+	DoubleSolenoid exampleDouble = new DoubleSolenoid(1, 0);
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -67,6 +75,19 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		SWRobot.arcadeDrive(mainStick);
+		
+		if (mainStick.getButton(Joystick.ButtonType.kTrigger) && timer.get() > 5.0) {
+			if (!isUp)
+				exampleDouble.set(DoubleSolenoid.Value.kForward);
+			else
+				exampleDouble.set(DoubleSolenoid.Value.kReverse);
+			
+			isUp = !isUp;
+			
+			timer.reset();
+			timer.start();
+		}else if (timer.get() > 2.0)
+			exampleDouble.set(DoubleSolenoid.Value.kOff);
 	}
 
 	/**
@@ -75,5 +96,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
+		
+		exampleDouble.startLiveWindowMode();
 	}
 }
