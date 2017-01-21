@@ -1,14 +1,16 @@
+
 package org.usfirst.frc.team6627.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.usfirst.frc.team6627.robot.commands.DriveAuto;
+import org.usfirst.frc.team6627.robot.subsystems.ExampleSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,16 +19,13 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-
 public class Robot extends IterativeRobot {
-	RobotDrive SWRobot = new RobotDrive(0, 1);
-	Joystick mainStick = new Joystick(0); // Main drive stick
-	Joystick secStick = new Joystick(1); // Likely to be pneumatics
-	Timer timer = new Timer();
-	
-	boolean isUp = false;
-	
-	DoubleSolenoid exampleDouble = new DoubleSolenoid(1, 0);
+
+	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+	public static OI oi;
+
+	Command autonomousCommand;
+	SendableChooser<Command> chooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -34,16 +33,52 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		CameraServer.getInstance().startAutomaticCapture();
+		oi = new OI();
+		chooser.addDefault("Default Auto", new DriveAuto(oi.SWRobot));
+		// chooser.addObject("My Auto", new MyAutoCommand());
+		SmartDashboard.putData("Auto mode", chooser);
 	}
 
 	/**
-	 * This function is run once each time the robot enters autonomous mode
+	 * This function is called once each time the robot enters Disabled mode.
+	 * You can use it to reset any subsystem information you want to clear when
+	 * the robot is disabled.
+	 */
+	@Override
+	public void disabledInit() {
+
+	}
+
+	@Override
+	public void disabledPeriodic() {
+		Scheduler.getInstance().run();
+	}
+
+	/**
+	 * This autonomous (along with the chooser code above) shows how to select
+	 * between different autonomous modes using the dashboard. The sendable
+	 * chooser code works with the Java SmartDashboard. If you prefer the
+	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+	 * getString code to get the auto name from the text box below the Gyro
+	 *
+	 * You can add additional auto modes by adding additional commands to the
+	 * chooser code above (like the commented example) or additional comparisons
+	 * to the switch structure below with additional strings & commands.
 	 */
 	@Override
 	public void autonomousInit() {
-		timer.reset();
-		timer.start();
+		autonomousCommand = new DriveAuto(oi.SWRobot);
+
+		/*
+		 * String autoSelected = SmartDashboard.getString("Auto Selector",
+		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
+		 * = new MyAutoCommand(); break; case "Default Auto": default:
+		 * autonomousCommand = new ExampleCommand(); break; }
+		 */
+
+		// schedule the autonomous command (example)
+		if (autonomousCommand != null)
+			autonomousCommand.start();
 	}
 
 	/**
@@ -51,22 +86,19 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		// Drive for 2 seconds
-		if (timer.get() < 2.0) {
-			SWRobot.drive(0.5, 0.0); // drive forwards half speed
-		} else if (timer.get() < 5.0) {
-			SWRobot.drive(-0.5, 0.0); // stop robot
-		} else {
-			SWRobot.drive(0.0,  0.0);
-		}
+		Scheduler.getInstance().run();
 	}
 
-	/**
-	 * This function is called once each time the robot enters tele-operated
-	 * mode
-	 */
 	@Override
 	public void teleopInit() {
+		// This makes sure that the autonomous stops running when
+		// teleop starts running. If you want the autonomous to
+		// continue until interrupted by another command, remove
+		// this line or comment it out.
+		if (autonomousCommand != null)
+			autonomousCommand.cancel();
+		
+		//oi.testDoubleSol.set(DoubleSolenoid.Value.kOff);
 	}
 
 	/**
@@ -74,20 +106,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		SWRobot.arcadeDrive(mainStick);
-		
-		if (mainStick.getButton(Joystick.ButtonType.kTrigger) && timer.get() > 5.0) {
-			if (!isUp)
-				exampleDouble.set(DoubleSolenoid.Value.kForward);
-			else
-				exampleDouble.set(DoubleSolenoid.Value.kReverse);
-			
-			isUp = !isUp;
-			
-			timer.reset();
-			timer.start();
-		}else if (timer.get() > 2.0)
-			exampleDouble.set(DoubleSolenoid.Value.kOff);
+		oi.CheckDrive();
+		Scheduler.getInstance().run();
 	}
 
 	/**
@@ -96,7 +116,5 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
-		
-		exampleDouble.startLiveWindowMode();
 	}
 }
