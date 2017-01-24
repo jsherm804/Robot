@@ -1,17 +1,19 @@
 package org.usfirst.frc.team6627.robot;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
+/*import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;*/
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-import org.opencv.core.Mat;
+/*import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -20,7 +22,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.objdetect.Objdetect;
 import org.usfirst.frc.team6627.robot.commands.DriveAuto;
-import org.usfirst.frc.team6627.robot.commands.ExampleCommand;
+import org.usfirst.frc.team6627.robot.commands.ExampleCommand;*/
 import org.usfirst.frc.team6627.robot.commands.ToggleLift;
 
 /**
@@ -56,7 +58,11 @@ public class OI {
 	// until it is finished as determined by it's isFinished method.
 	// button.whenReleased(new ExampleCommand());
 	
-	RobotDrive SWRobot = new RobotDrive(0, 1);
+	SpeedController frontLeftSpeedController = new Spark(0), rearLeftSpeedController = new Spark(1),
+			frontRightSpeedController = new Spark(2), rearRightSpeedController = new Spark(3);
+	
+	RobotDrive SWRobot = new RobotDrive(frontLeftSpeedController, rearLeftSpeedController,
+										frontRightSpeedController, rearRightSpeedController);
 	
 	Joystick leftJoy = new Joystick(0);
 	Joystick rightJoy = new Joystick(1);
