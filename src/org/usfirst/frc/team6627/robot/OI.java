@@ -129,6 +129,6 @@ public class OI {
 	}
 	
 	public void CheckDrive() {
-		SWRobot.arcadeDrive(leftJoy);
+		SWRobot.tankDrive(leftJoy, rightJoy);
 	}
 }
