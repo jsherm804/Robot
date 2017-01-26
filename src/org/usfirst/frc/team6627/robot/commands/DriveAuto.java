@@ -24,16 +24,16 @@ public class DriveAuto extends Command {
     	timer.reset();
     	timer.start();
     	
-    	mainRD.drive(0.5, 0.0);
+    	mainRD.drive(-0.5, 0.0);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	// Drive for 2 seconds
     	if (timer.get() < 2.0) {
-    		mainRD.drive(0.5, 0.0); // drive forwards half speed
+    		mainRD.drive(-0.5, 0.0); // drive forwards half speed
     	} else if (timer.get() < 5.0) {
-    		mainRD.drive(-0.5, 0.0); // stop robot
+    		mainRD.drive(0.5, 0.0); // stop robot
     	}
     }
 
