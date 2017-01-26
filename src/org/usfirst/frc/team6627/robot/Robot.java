@@ -107,6 +107,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		oi.CheckDrive();
+		System.out.println("[LEFT]: Motor isInverted: " + oi.frontLeftSpeedController.getInverted() + " Other: " +
+				oi.frontLeftSpeedController.getInverted());
+		System.out.println("[RIGHT]: Motor isInverted: " + oi.frontRightSpeedController.getInverted() + " Other: " +
+				oi.frontRightSpeedController.getInverted());
 		Scheduler.getInstance().run();
 	}
 

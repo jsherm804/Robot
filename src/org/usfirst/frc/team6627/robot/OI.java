@@ -61,8 +61,9 @@ public class OI {
 	SpeedController frontLeftSpeedController = new Spark(0), rearLeftSpeedController = new Spark(1),
 			frontRightSpeedController = new Spark(2), rearRightSpeedController = new Spark(3);
 	
-	RobotDrive SWRobot = new RobotDrive(frontLeftSpeedController, rearLeftSpeedController,
-										frontRightSpeedController, rearRightSpeedController);
+	RobotDrive SWRobot;
+	
+	//RobotDrive SWRobot = new RobotDrive(0, 1, 2, 3);
 	
 	Joystick leftJoy = new Joystick(0);
 	Joystick rightJoy = new Joystick(1);
@@ -77,6 +78,12 @@ public class OI {
 		testDoubleSol.set(DoubleSolenoid.Value.kOff);
 		pistonIsUp = false;
 		button1.whenPressed(new ToggleLift(testDoubleSol, this));
+		
+		frontLeftSpeedController.setInverted(true);
+		rearLeftSpeedController.setInverted(true);
+		
+		SWRobot = new RobotDrive(frontLeftSpeedController, rearLeftSpeedController,
+				frontRightSpeedController, rearRightSpeedController);
 		
 		new Thread(() -> {
             UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
