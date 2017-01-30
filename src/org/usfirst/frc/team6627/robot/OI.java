@@ -81,6 +81,8 @@ public class OI {
 		
 		frontLeftSpeedController.setInverted(true);
 		rearLeftSpeedController.setInverted(true);
+		frontRightSpeedController.setInverted(true);
+		rearRightSpeedController.setInverted(true);
 		
 		SWRobot = new RobotDrive(frontLeftSpeedController, rearLeftSpeedController,
 				frontRightSpeedController, rearRightSpeedController);
