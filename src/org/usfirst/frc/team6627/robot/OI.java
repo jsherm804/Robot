@@ -91,7 +91,7 @@ public class OI {
             UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
             camera.setResolution(640, 480);
             /*
-             * Face detection... Let's not talk about it.
+             * Face detection
              * 
              */
             /*
@@ -138,6 +138,6 @@ public class OI {
 	}
 	
 	public void CheckDrive() {
-		SWRobot.tankDrive(leftJoy, rightJoy);
+		SWRobot.arcadeDrive(leftJoy, true);
 	}
 }
